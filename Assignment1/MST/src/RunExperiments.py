@@ -88,28 +88,12 @@ def parseEdges(graph_file):
 
 
 def computeMST(graph,edge_list):
+    # KRUSKAL ALGORITHM
     t = []
     set_list = []
     unique_d = {}
     cost = 0
     uf = UnionFind()
-    # for node in graph.nodes():
-    #     set_list.append(set([node]))
-
-    # for i in range(0,len(edge_list)):
-    #     u,v = edge_list[i][0], edge_list[i][1]
-    #     if unique_d.get((u,v),None) == None:
-    #         unique_d[(u,v)] = 1  
-    #         if set() == set_list[u]&set_list[v]:
-    #             t.append((u,v,edge_list[i][2]))
-    #             cost += edge_list[i][2]
-    #             temp = set_list[u] | set_list[v]
-
-    #             for z in range(len(set_list)):
-    #                 if u in set_list[z]:
-    #                     set_list[z] = temp
-    #                 if v in set_list[z]:
-    #                     set_list[z] = temp
 
     for i in range(0,len(edge_list)):
         u,v = edge_list[i][0], edge_list[i][1]
@@ -174,16 +158,6 @@ def main():
     start_MST = time.time() #time in seconds
     MSTweight,uf,t = computeMST(G,edge_list) #TODO: Write this method to return total weight of MST
     total_time = (time.time() - start_MST) * 1000 #to convert to milliseconds
-    print(MSTweight,total_time)
-
-    start = time.time()
-    T=nx.minimum_spanning_tree(G)
-    edge_list = T.edges(data=True)
-    cost = 0
-    for edge in edge_list:
-        cost += edge[2]['weight']
-    total = (time.time() - start) * 1000
-    print(cost,total)
 
     # Write initial MST weight and time to file
     output = open(output_file, 'w')
@@ -191,7 +165,7 @@ def main():
 
     mst = nx.Graph()
     mst.add_weighted_edges_from(t)
-
+    recomputeTime = 0
     #Changes file
     with open(change_file, 'r') as changes:
         num_changes = changes.readline()
@@ -205,13 +179,13 @@ def main():
 
             #call recomputeMST function
             start_recompute = time.time()
-            new_weight, uf, mst = recomputeMST(u,v,weight,G,uf,mst,new_weight) #TODO: Write this method to return the weight of the modified MST (note: this function should not just recompute the full MST)
+            new_weight, uf, mst = recomputeMST(u,v,weight,G,uf,mst,new_weight)
             total_recompute = (time.time() - start_recompute) * 1000 # to convert to milliseconds
+            recomputeTime += total_recompute
 
             #write new weight and time to output file
             output.write(str(new_weight) + " " + str(total_recompute) + "\n")
 
-    # print(mst[94][117])
 
 if __name__ == '__main__':
     # run the experiments
