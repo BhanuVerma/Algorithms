@@ -82,13 +82,14 @@ def parseEdges(graph_file):
 
     graph = nx.MultiGraph()
     graph.add_weighted_edges_from(edge_list)
-    edge_list.sort(key=lambda tup: tup[2])  # sorts in place
 
     return graph,edge_list
 
 
 def computeMST(graph,edge_list):
     # KRUSKAL ALGORITHM
+    edge_list.sort(key=lambda tup: tup[2])  # sorts in place
+
     t = []
     set_list = []
     unique_d = {}
@@ -186,6 +187,9 @@ def main():
             #write new weight and time to output file
             output.write(str(new_weight) + " " + str(total_recompute) + "\n")
 
+    # output.write("")
+    # output.write(str(recomputeTime))
+    
 
 if __name__ == '__main__':
     # run the experiments
