@@ -2,6 +2,8 @@
 ##  CSE6140 HW1
 ##  This assignment requires installation of networkx package if you want to make use of available graph data structures or you can write your own!!
 ##  Please feel free to modify this code or write your own
+## Name - Bhanu Verma
+## GTid - 903151012
 
 import networkx as nx
 import time
