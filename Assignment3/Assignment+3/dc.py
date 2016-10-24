@@ -2,6 +2,7 @@ import os
 import time
 from os import listdir
 from os.path import isfile, join
+import sys
 
 
 class divide_and_conquer(object):
@@ -10,11 +11,11 @@ class divide_and_conquer(object):
 
         self.day_arr = []       # each entry in this array contains array of interests
         self.data_files = []    # each entry in this array contains file name for each file in data folder
-        # self.file_data = []
         
 
     def load_file_data(self,input_path):
         self.data_files = [f for f in listdir(input_path) if '.txt' in f and isfile(join(input_path, f))]
+
 
     def load_day_data(self,file_name):
 
@@ -29,26 +30,66 @@ class divide_and_conquer(object):
                 self.day_arr.append(days)
         
 
-    def find_max_sum_array(self,nums):
-        max_till_here = nums[0]
-        max_total = nums[0]
-        temp_start = 0
-        start = 0
-        end = 0
+    def get_max_overlapping_arr(self,nums,start,end,middle):
+        sum_val = 0
+        left_sum = -sys.maxsize-1
+        right_sum = -sys.maxsize-1
+        s_i = 0
+        e_i = 0
 
-        for i in range(1,len(nums)):
-            if nums[i] >= max_till_here+nums[i]:
-                temp_start = i
+        # calculate left sum
+        for i in range(middle,-1,-1):
+            sum_val += nums[i]
+            if sum_val >= left_sum:
+                left_sum = sum_val
+                s_i = i
 
-            max_till_here = max(nums[i],max_till_here+nums[i])
+        sum_val = 0
+        # calculate right sum
+        for i in range(middle+1,end+1,1):
+            sum_val += nums[i]
+            if sum_val >= right_sum:
+                right_sum = sum_val
+                e_i = i
 
-            if max_till_here >= max_total:
-                start = temp_start
-                end = i
+        return left_sum+right_sum, s_i, e_i
 
-            max_total = max(max_total,max_till_here)
 
-        return max_total,start,end
+    def get_max_sum_arr(self,nums,start,end):
+
+        if start == end:
+            return nums[end],start,end
+
+        middle = int((start+end)/2)
+        left_sum, left_start, left_end = self.get_max_sum_arr(nums,start,middle)
+        right_sum, right_start, right_end = self.get_max_sum_arr(nums,middle+1,end)
+        overlapping_sum, cross_start, cross_end = self.get_max_overlapping_arr(nums,start,end,middle)
+
+        # print(left_sum,left_start,left_end)
+        # print(right_sum,right_start,right_end)
+        # print(overlapping_sum,cross_start,cross_end)
+        # print('\n')
+
+        i = 0
+        j = 0
+        max_sum = 0
+
+        if left_sum > right_sum:
+            i = left_start
+            j = left_end
+            max_sum = left_sum
+        else:
+            i = right_start
+            j = right_end
+            max_sum = right_sum
+
+        if overlapping_sum > max_sum:
+            i = cross_start
+            j = cross_end
+            max_sum = overlapping_sum
+
+        return max_sum,i,j
+
 
     def save_output(self,file_name,data):
         file_name = 'output/bverma3_output_dc_' + file_name
@@ -74,12 +115,12 @@ for file in dc.data_files:
 
     for day in dc.day_arr:
         start_time = time.time() * 1000
-        val,i,j = dc.find_max_sum_array(day)
+        val,i,j = dc.get_max_sum_arr(day,0,len(day)-1)
         exec_time = (time.time() * 1000) - start_time
         val = "%.2f" % val
         exec_time = "%.2f" % exec_time
 
-        out_str = val + ',' + str(i+1) + ',' + str(j+1) + ',' + exec_time
+        out_str = val #+ ',' + str(i+1) + ',' + str(j+1) + ',' + exec_time
         output.append(out_str)
 
     dc.save_output(file,output)
