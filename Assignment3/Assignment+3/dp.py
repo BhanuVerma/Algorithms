@@ -1,21 +1,26 @@
+# Bhanu Verma
+# This class contains the dynamic programming algorithm which will help out Amrita in getting the best interest rates
+
 import os
 import time
 from os import listdir
 from os.path import isfile, join
 
-
 class dynamic_programming(object):
     def __init__(self):
-        # Initialize your data structure here.
+        # Initializing data structure here
 
         self.day_arr = []       # each entry in this array contains array of interests
         self.data_files = []    # each entry in this array contains file name for each file in data folder
         
 
     def load_file_data(self,input_path):
+        # populating data files
         self.data_files = [f for f in listdir(input_path) if '.txt' in f and isfile(join(input_path, f))]
 
+
     def load_day_data(self,file_name):
+        # reading data from file, formatting it and storing it in day_arr
 
         with open(file_name) as f:
             content = [line.strip('\n') for line in f.readlines()]
@@ -29,6 +34,7 @@ class dynamic_programming(object):
         
 
     def get_max_arr(self,nums):
+        # Algorithm for calculating maximum sum from continguous sub-array
         max_till_here = nums[0]
         max_total = nums[0]
         temp_start = 0
@@ -49,7 +55,10 @@ class dynamic_programming(object):
 
         return max_total,start,end
 
+
     def save_output(self,file_name,data):
+        # saving output in the output files for each input file
+
         file_name = 'output/bverma3_output_dp_' + file_name
 
         with open(file_name,'w') as f:
@@ -61,27 +70,36 @@ class dynamic_programming(object):
                     f.write('\n')
 
 
-dc = dynamic_programming()
-path = os.path.join(os.path.dirname(__file__), 'data/')
-dc.load_file_data(path)
+    def run_dp(self):
+        path = os.path.join(os.path.dirname(__file__), 'data/')
+        self.load_file_data(path)
 
-for file in dc.data_files:
-    # print("Loading data for file ", file,'\n')
-    dc.load_day_data('data/'+file)
-    # print("Finished loading data")
-    output = []
+        for file in self.data_files:
+            print("Loading data for file",file,"....")
+            self.load_day_data('data/'+file)
+            print("Finished loading data for file",file,"....")
+            output = []
 
-    for day in dc.day_arr:
-        start_time = time.time() * 1000
-        val,i,j = dc.get_max_arr(day)
-        exec_time = (time.time() * 1000) - start_time
-        val = "%.2f" % val
-        exec_time = "%.2f" % exec_time
+            print()
+            print("Running DP Algorithm for file",file,"....")
+            for day in self.day_arr:
+                start_time = time.time() * 1000
+                val,i,j = self.get_max_arr(day)
+                exec_time = (time.time() * 1000) - start_time
+                val = "%.2f" % val
+                exec_time = "%.2f" % exec_time
 
-        out_str = val #+ ',' + str(i+1) + ',' + str(j+1) + ',' + exec_time
-        output.append(out_str)
+                out_str = val + ',' + str(i+1) + ',' + str(j+1) + ',' + exec_time
+                output.append(out_str)
+                # break
+            print("Finished running DP Algorithm for file",file,"....")
+            print()
 
-    dc.save_output(file,output)
+            self.save_output(file,output)
+            # break
 
-    # break
+
+if __name__ == '__main__':
+    dp = dynamic_programming()
+    dp.run_dp()
 
