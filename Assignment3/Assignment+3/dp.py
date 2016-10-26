@@ -74,12 +74,14 @@ class dynamic_programming(object):
         path = os.path.join(os.path.dirname(__file__), 'data/')
         self.load_file_data(path)
 
+        avg_arr = []
         for file in self.data_files:
             print("Loading data for file",file,"....")
             self.load_day_data('data/'+file)
             print("Finished loading data for file",file,"....")
             output = []
 
+            # sum_val = 0
             print()
             print("Running DP Algorithm for file",file,"....")
             for day in self.day_arr:
@@ -87,16 +89,21 @@ class dynamic_programming(object):
                 val,i,j = self.get_max_arr(day)
                 exec_time = (time.time() * 1000) - start_time
                 val = "%.2f" % val
+                # sum_val += exec_time
                 exec_time = "%.2f" % exec_time
 
                 out_str = val + ',' + str(i+1) + ',' + str(j+1) + ',' + exec_time
                 output.append(out_str)
                 # break
+
+            # avg_arr.append(str(sum_val/len(self.day_arr)))
             print("Finished running DP Algorithm for file",file,"....")
             print()
 
             self.save_output(file,output)
+            self.day_arr = []
             # break
+        # self.save_output('sum.txt',avg_arr)
 
 
 if __name__ == '__main__':
