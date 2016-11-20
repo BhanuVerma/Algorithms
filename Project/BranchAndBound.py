@@ -7,41 +7,54 @@ import BranchState
 
 class BranchAndBound:
 
-	def __init__(self, graph):
+	def __init__(self, graph, limit=600):
 		self.graph = graph
 		self.winner = None
 		self.results = []
+		self.limit = limit
 
 
 	def run_DFS(self, graph):
 		stack = []
-		currentCity = 1
+		initial_city = 1
 		a = graph.copy()
-		startState = BranchState.BranchState(graph.copy(), [], 0)
-		startState.addToPath(currentCity)
-		stack.append(startState)
+		initial_state = BranchState.BranchState(graph.copy(), [], 0)
+		initial_state.add_stop(initial_city)
+		stack.append(initial_state)
+		i = 0
 
 		while len(stack):
-			if time.time() - self.begin_time > 300:
+			if time.time() - self.begin_time > self.limit:
 				break
-				
-			currentState = stack.pop()
-			if not self.winner or currentState.boundValue < self.winner.boundValue:
-				if len(currentState.path) == len(graph.node.keys()): #if we have a candidate solution
-					if currentState.path[0] in graph[currentState.path[-1]].keys(): #if the last city is connected to the first one to create a cycle
-						currentState.addToPath(currentState.path[0])
-						if not self.winner or self.winner.boundValue > currentState.boundValue:#updating upper bound
-							self.results.append((time.time() - self.begin_time, currentState.path_cost, currentState.path))
-							print("Candidate- ",(time.time() - self.begin_time, currentState.path_cost, currentState.path))
-							self.winner = currentState
+
+			last_state = stack.pop()
+			if not self.winner or last_state.bound_val < self.winner.bound_val:
+
+				# checking for a candidate solution
+				if len(graph.node.keys()) == len(last_state.path):
+
+					# checking if we have a cycle
+					if last_state.path[0] in graph[last_state.path[-1]].keys(): 
+						last_state.add_stop(last_state.path[0])
+
+						# checking if upper bound needs to be updated
+						if not self.winner or self.winner.bound_val > last_state.bound_val:
+							i += 1
+							self.results.append((last_state.path, last_state.path_cost, time.time() - self.begin_time))
+							print("Solution" + str(i) + ": ",(last_state.path, last_state.path_cost, time.time() - self.begin_time))
+							self.winner = last_state
 				else:
-					sorted_list = self.sort_edges(graph[currentState.path[-1]])
-					for new_city,dist in sorted_list:
-						if new_city not in currentState.path:
-							newState = BranchState.BranchState(graph, currentState.path[:], currentState.path_cost)
-							newState.addToPath(new_city) #discovering new paths
-							if not self.winner or self.winner.boundValue > newState.boundValue: #only visiting a path if its lowerbound is lesser than upperbound
-								stack.append(newState)
+					sorted_list = self.sort_edges(graph[last_state.path[-1]])
+					for node,cost in sorted_list:
+						if node not in last_state.path:
+							new_state = BranchState.BranchState(graph, last_state.path[:], last_state.path_cost)
+							new_state.add_stop(node)
+
+							# checking if a branch can be pruned
+							if not self.winner or self.winner.bound_val > new_state.bound_val: 
+								stack.append(new_state)
+			# else:
+			# 	return
 
 
 	def sort_edges(self,edge_dict):
@@ -54,7 +67,7 @@ class BranchAndBound:
 		return tup
 
 
-	def generate_tour(self, limit=1):
+	def generate_tour(self):
 		graph = self.graph
 		# mat = [[0 for i in range(len(graph.node.keys()))] for j in range(len(graph.node.keys()))]
 		# for i in range(len(graph.node.keys())):

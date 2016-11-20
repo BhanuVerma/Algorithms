@@ -10,11 +10,11 @@ class BranchState:
 		self.path_cost = path_cost
 
 
-	def addToPath(self, city):
+	def add_stop(self, stop):
 		if len(self.path):
-			self.path_cost = self.path_cost + self.graph[self.path[-1]][city]['weight']
-		self.path.append(city)
-		self.boundValue = self.get_1tree_lower_bound(self.graph, self.path, self.path_cost)
+			self.path_cost = self.path_cost + self.graph[self.path[-1]][stop]['weight']
+		self.path.append(stop)
+		self.bound_val = self.get_1tree_lower_bound(self.graph, self.path, self.path_cost)
 
 
 	def get_1tree_lower_bound(self, graph, path, path_cost):

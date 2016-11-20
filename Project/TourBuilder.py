@@ -16,8 +16,8 @@ class TourBuilder:
     def build_tour(self, instance='Cincinnati', algorithm='bnb', seed=1, limit=1):
 
         if algorithm == 'bnb':
-            bnb = BranchAndBound.BranchAndBound(self.graph)
-            return bnb.generate_tour(limit=limit)
+            bnb = BranchAndBound.BranchAndBound(self.graph, limit)
+            return bnb.generate_tour()
         # elif alg == 'mst_approx':
         # 	approx_1 = MstApprox(self.graph)
         #     return approx_1.generate_tour(seed=seed, time=time)
@@ -83,16 +83,16 @@ def main():
     sol_file = file_name + '.sol'
     trace_file = file_name + '.trace'
 
-    # Writing solution file
+    # Generating solution file
     with open(sol_file, 'w') as f:
         f.write('{}\n'.format(tour_data[-1][1]))
-        for edge in zip(tour_data[-1][2], tour_data[-1][2][1:]):
+        for edge in zip(tour_data[-1][0], tour_data[-1][0][1:]):
             f.write('{} {} {}\n'.format(edge[0], edge[1], graph[edge[0]][edge[1]]['weight']))
 
-    # Writing trace file
+    # Generating trace file
     with open(trace_file, 'w') as f:
         for entry in tour_data:
-            f.write('{:.2f} {}\n'.format(entry[0], entry[1]))
+            f.write('{:.2f} {}\n'.format(entry[2], entry[1]))
 
 
 if __name__ == '__main__':
