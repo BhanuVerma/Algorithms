@@ -36,7 +36,8 @@ class BranchState:
 
 		return path_cost + mst.size(weight='weight')
 
-	def findlowerbound_mindist(self, matrix,path,tourcost):
+
+	def get_min_dist_lower_bound(self, matrix, path, path_cost):
 		mat = matrix.copy()
 		if len(path) > 1:
 			i=0
@@ -48,7 +49,8 @@ class BranchState:
 		mat = mat - np.reshape(row_min,(len(matrix),1))
 		col_min = np.amin(mat,axis=0)
 
-		return np.sum(row_min) + np.sum(col_min) + tourcost
+		return np.sum(row_min) + np.sum(col_min) + path_cost
+
 
 	def get_cheapest_neighbour(self,node,graph):
 		temp_dict = graph[node]

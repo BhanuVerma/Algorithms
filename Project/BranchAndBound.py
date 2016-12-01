@@ -53,8 +53,6 @@ class BranchAndBound:
 							# checking if a branch can be pruned
 							if not self.winner or self.winner.bound_val > new_state.bound_val: 
 								stack.append(new_state)
-			# else:
-			# 	return
 
 
 	def sort_edges(self,edge_dict):
