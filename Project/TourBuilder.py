@@ -32,6 +32,23 @@ class TourBuilder:
 
 
 def main():
+
+    # Optimal Tour Lengths
+    opt_tour_lengths = {
+        'SanFrancisco': 810196,
+        'NYC': 1555060,
+        'Roanoke': 655454,
+        'Atlanta': 2003763,
+        'Champaign': 52643,
+        'Cincinnati': 277952,
+        'Philadelphia': 1395981,
+        'UKansasState': 62962,
+        'Toronto': 1176151,
+        'UMissouri': 132709,
+        'Boston': 893536,
+        'Denver': 100431
+    }
+
     # building an argument parser for taking in values from command line
     parser = argparse.ArgumentParser()
     parser.add_argument('-inst', type=str, dest="instance", default='Cincinnati', help='This argument takes in name of the cities')
@@ -94,6 +111,10 @@ def main():
         for entry in tour_data:
             f.write('{:.2f} {}\n'.format(entry[2], entry[1]))
 
+    if tour_data:
+        opt = opt_tour_lengths[args.instance]
+        rel_err = (tour_data[-1][1] - opt)/opt
+        print('Relative error is ', rel_err)
 
 if __name__ == '__main__':
     main()

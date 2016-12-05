@@ -1,6 +1,6 @@
 import networkx as nx
-# import sys,operator,itertools
-# import numpy as np
+import sys,operator,itertools
+import numpy as np
 import time
 import BranchState
 
@@ -14,11 +14,11 @@ class BranchAndBound:
 		self.limit = limit
 
 
-	def run_DFS(self, graph):
+	def run_DFS(self, graph, matrix):
 		stack = []
 		initial_city = 1
 		a = graph.copy()
-		initial_state = BranchState.BranchState(graph.copy(), [], 0)
+		initial_state = BranchState.BranchState(graph.copy(), [], 0, matrix)
 		initial_state.add_stop(initial_city)
 		stack.append(initial_state)
 		i = 0
@@ -47,7 +47,7 @@ class BranchAndBound:
 					sorted_list = self.sort_edges(graph[last_state.path[-1]])
 					for node,cost in sorted_list:
 						if node not in last_state.path:
-							new_state = BranchState.BranchState(graph, last_state.path[:], last_state.path_cost)
+							new_state = BranchState.BranchState(graph, last_state.path[:], last_state.path_cost, matrix)
 							new_state.add_stop(node)
 
 							# checking if a branch can be pruned
@@ -67,16 +67,16 @@ class BranchAndBound:
 
 	def generate_tour(self):
 		graph = self.graph
-		# mat = [[0 for i in range(len(graph.node.keys()))] for j in range(len(graph.node.keys()))]
-		# for i in range(len(graph.node.keys())):
-		# 	for j in range(len(graph.node.keys())):
-		# 		if i != j:
-		# 			mat[i][j] = graph[i+1][j+1]
-		# 		else:
-		# 			mat[i][j] = sys.maxint
-		# self.mat = np.array(mat)
+		mat = [[0 for i in range(len(graph.node.keys()))] for j in range(len(graph.node.keys()))]
+		for i in range(len(graph.node.keys())):
+			for j in range(len(graph.node.keys())):
+				if i != j:
+					mat[i][j] = graph[i+1][j+1]['weight']
+				else:
+					mat[i][j] = sys.maxsize
+		self.mat = np.array(mat)
 		self.begin_time = time.time()
-		self.run_DFS(graph)
+		self.run_DFS(graph, self.mat)
 
 		return self.results
 
