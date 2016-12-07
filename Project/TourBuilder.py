@@ -2,7 +2,7 @@ import BranchAndBound
 # import MstApprox
 import NNApprox
 # import 2OptSearch
-# import SimulatedAnnealing
+import SimulatedAnnealing
 import networkx as nx
 from os.path import isfile
 from math import sqrt
@@ -25,9 +25,12 @@ class TourBuilder:
         elif algorithm == 'Heur':
             approx_1 = NNApprox.NNApprox(self.graph,instance,seed,limit)
             approx_1.generate_tour()
-        # elif method == 'opt2_search':
-        # 	ls_1 = Opt2Search(self.graph)
-        #     return ls_1.generate_tour(seed=seed, time=time)
+        # elif method == 'LS1':
+        # 	ls_1 = Opt2Search.Opt2Search(self.graph,instance,seed,limit)
+        #     return ls_1.generate_tour()
+        elif algorithm == 'LS2':
+            ls_2 = SimulatedAnnealing.SimulatedAnnealing(self.graph,instance,seed,limit)
+            ls_2.generate_tour()
         else:
         	return None
 
