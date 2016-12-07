@@ -107,7 +107,7 @@ class MSTApprox:
         self.path = []
         graph = self.read_data()
         edge = self.mst(graph)
-        self.preorder(edge,5)
+        self.preorder(edge,self.random_seed)
         output = self.walk(graph)
         stop = tt.default_timer()
         self.write_trace(stop-start,int(self.total))
