@@ -1,3 +1,4 @@
+# Class which implements the MST Approximation algorithm
 import numpy as np
 import math
 import sys

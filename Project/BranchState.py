@@ -1,4 +1,4 @@
-# Class for storing the state of path covered till now
+# Class for storing the state of path covered till now by Bhanu Verma
 
 import networkx as nx
 import numpy as np

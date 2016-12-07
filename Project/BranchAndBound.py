@@ -1,3 +1,5 @@
+# Class which implements the branch and bound algorithm using the BranchState.py file, 
+# we use DFS for out branch and bound implentation, by Bhanu Verma
 import networkx as nx
 import sys,operator,itertools
 import numpy as np

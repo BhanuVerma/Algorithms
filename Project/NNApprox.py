@@ -1,3 +1,4 @@
+# Class which implements the Nearest Neighbour Approximation algorithm
 import random
 import sys
 import pandas as pd
