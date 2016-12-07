@@ -1,5 +1,5 @@
 import BranchAndBound
-# import MstApprox
+import MSTApprox
 import NNApprox
 import Opt2Search
 import SimulatedAnnealing
@@ -19,12 +19,12 @@ class TourBuilder:
         if algorithm == 'BnB':
             bnb = BranchAndBound.BranchAndBound(self.graph,limit)
             return bnb.generate_tour()
-        # elif alg == 'MSTApprox':
-        #   approx_1 = MstApprox(self.graph)
-        #     return approx_1.generate_tour(seed=seed, time=time)
-        elif algorithm == 'Heur':
-            approx_1 = NNApprox.NNApprox(self.graph,instance,seed,limit)
+        elif algorithm == 'MSTApprox':
+            approx_1 = MSTApprox.MSTApprox(self.graph,instance,seed,limit)
             approx_1.generate_tour()
+        elif algorithm == 'Heur':
+            approx_2 = NNApprox.NNApprox(self.graph,instance,seed,limit)
+            approx_2.generate_tour()
         elif algorithm == 'LS1':
             ls_1 = Opt2Search.Opt2Search(self.graph,instance,seed,limit)
             ls_1.generate_tour()
