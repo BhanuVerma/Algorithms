@@ -163,12 +163,6 @@ def main():
         weight = calculateTotalDistance(edge, G)/2
         output.write(str(u)+ " " + str(v) + " "+ str(int(weight)) + "\n")
 
-    #print distance
-    # print route
-    #print time.time()-start_time
-
-
-
 
 
 if __name__ == '__main__':

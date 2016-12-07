@@ -1,7 +1,6 @@
-
 import numpy as np
 import math
-#E=[[1,2],[2,3],[6,7],[6,8],[2,4],[2,5],[8,9],[1,6]]
+
 cites = ["Atlanta",
 		 "Cincinnati",
 		 "SanFrancisco",
@@ -14,7 +13,7 @@ cites = ["Atlanta",
 	     "Philadelphia",	
 	     "UMissouri",		
 	     "Roanoke"]
-#G=[[1000,1,1,1,1],[1,1000,1.414,2,1.414],[1,1.414,1000,1,2],[1,2,1.414,1000,1.414],[1,1.414,2,1.414,1000]]
+
 inf=float("inf")
 path = []
 total=0.0
@@ -79,7 +78,6 @@ def read_data(fname):
 			if line == 'EOF\n':
 				break
 			l=line[:-1].split(' ')
-			#print line
 			L.append({'x':float(l[1]),'y':float(l[2])})
 		
 		n = len(L)

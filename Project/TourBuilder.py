@@ -1,7 +1,8 @@
 import BranchAndBound
 # import MstApprox
-# import NNApprox
-# import Opt2Search
+import NNApprox
+# import 2OptSearch
+# import SimulatedAnnealing
 import networkx as nx
 from os.path import isfile
 from math import sqrt
@@ -13,17 +14,17 @@ class TourBuilder:
     def __init__(self, graph):
         self.graph = graph
 
-    def build_tour(self, instance='Cincinnati', algorithm='bnb', seed=1, limit=1):
+    def build_tour(self, instance='Cincinnati', algorithm='BnB', seed=1, limit=1):
 
-        if algorithm == 'bnb':
-            bnb = BranchAndBound.BranchAndBound(self.graph, limit)
+        if algorithm == 'BnB':
+            bnb = BranchAndBound.BranchAndBound(self.graph,limit)
             return bnb.generate_tour()
-        # elif alg == 'mst_approx':
+        # elif alg == 'MSTApprox':
         # 	approx_1 = MstApprox(self.graph)
         #     return approx_1.generate_tour(seed=seed, time=time)
-        # elif alg == 'nn_approx':
-        # 	approx_1 = NNApprox(self.graph)
-        #     return approx_1.generate_tour(seed=seed, time=time)
+        elif algorithm == 'Heur':
+            approx_1 = NNApprox.NNApprox(self.graph,instance,seed,limit)
+            approx_1.generate_tour()
         # elif method == 'opt2_search':
         # 	ls_1 = Opt2Search(self.graph)
         #     return ls_1.generate_tour(seed=seed, time=time)
@@ -89,32 +90,37 @@ def main():
     # passing the graph to TourBuilder
     builder = TourBuilder(graph)
     kwargs = vars(args).copy()
-    tour_data = builder.build_tour(**kwargs)
 
-    # Formatting output file name
-    if args.algorithm == 'bnb':
-    	file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit)
+    if args.algorithm == 'BnB':
+        tour_data = builder.build_tour(**kwargs)
+        file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit)
+
+        sol_file = file_name + '.sol'
+        trace_file = file_name + '.trace'
+
+        # Generating solution file
+        with open(sol_file, 'w') as f:
+            f.write('{}\n'.format(tour_data[-1][1]))
+            for edge in zip(tour_data[-1][0], tour_data[-1][0][1:]):
+                f.write('{} {} {}\n'.format(edge[0], edge[1], graph[edge[0]][edge[1]]['weight']))
+
+        # Generating trace file
+        with open(trace_file, 'w') as f:
+            for entry in tour_data:
+                f.write('{:.2f} {}\n'.format(entry[2], entry[1]))
+
+        if tour_data:
+            opt = opt_tour_lengths[args.instance]
+            rel_err = (tour_data[-1][1] - opt)/opt
+            print('Relative error is ', rel_err)
     else:
-    	file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit) + '_' + str(args.seed)
+        builder.build_tour(**kwargs)
 
-    sol_file = file_name + '.sol'
-    trace_file = file_name + '.trace'
-
-    # Generating solution file
-    with open(sol_file, 'w') as f:
-        f.write('{}\n'.format(tour_data[-1][1]))
-        for edge in zip(tour_data[-1][0], tour_data[-1][0][1:]):
-            f.write('{} {} {}\n'.format(edge[0], edge[1], graph[edge[0]][edge[1]]['weight']))
-
-    # Generating trace file
-    with open(trace_file, 'w') as f:
-        for entry in tour_data:
-            f.write('{:.2f} {}\n'.format(entry[2], entry[1]))
-
-    if tour_data:
-        opt = opt_tour_lengths[args.instance]
-        rel_err = (tour_data[-1][1] - opt)/opt
-        print('Relative error is ', rel_err)
+    # # Formatting output file name
+    # if args.algorithm == 'BnB':
+    # 	file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit)
+    # else:
+    # 	file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit) + '_' + str(args.seed)
 
 if __name__ == '__main__':
     main()
