@@ -1,7 +1,7 @@
 import BranchAndBound
 # import MstApprox
 import NNApprox
-# import 2OptSearch
+import Opt2Search
 import SimulatedAnnealing
 import networkx as nx
 from os.path import isfile
@@ -20,19 +20,19 @@ class TourBuilder:
             bnb = BranchAndBound.BranchAndBound(self.graph,limit)
             return bnb.generate_tour()
         # elif alg == 'MSTApprox':
-        # 	approx_1 = MstApprox(self.graph)
+        #   approx_1 = MstApprox(self.graph)
         #     return approx_1.generate_tour(seed=seed, time=time)
         elif algorithm == 'Heur':
             approx_1 = NNApprox.NNApprox(self.graph,instance,seed,limit)
             approx_1.generate_tour()
-        # elif method == 'LS1':
-        # 	ls_1 = Opt2Search.Opt2Search(self.graph,instance,seed,limit)
-        #     return ls_1.generate_tour()
+        elif algorithm == 'LS1':
+            ls_1 = Opt2Search.Opt2Search(self.graph,instance,seed,limit)
+            ls_1.generate_tour()
         elif algorithm == 'LS2':
             ls_2 = SimulatedAnnealing.SimulatedAnnealing(self.graph,instance,seed,limit)
             ls_2.generate_tour()
         else:
-        	return None
+            return None
 
 
 def main():
@@ -85,10 +85,10 @@ def main():
     for u in city_dict:
         for v in city_dict:
             if u != v:
-            	x_dist = city_dict[u]['x'] - city_dict[v]['x']
-            	y_dist = city_dict[u]['y'] - city_dict[v]['y']
-            	val = int(round(sqrt(x_dist**2 + y_dist**2)))
-            	graph.add_edge(u, v, weight= val)
+                x_dist = city_dict[u]['x'] - city_dict[v]['x']
+                y_dist = city_dict[u]['y'] - city_dict[v]['y']
+                val = int(round(sqrt(x_dist**2 + y_dist**2)))
+                graph.add_edge(u, v, weight= val)
 
     # passing the graph to TourBuilder
     builder = TourBuilder(graph)
@@ -121,9 +121,9 @@ def main():
 
     # # Formatting output file name
     # if args.algorithm == 'BnB':
-    # 	file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit)
+    #   file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit)
     # else:
-    # 	file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit) + '_' + str(args.seed)
+    #   file_name = 'Output/' + str(args.instance) + '_' + str(args.algorithm) + '_' + str(args.limit) + '_' + str(args.seed)
 
 if __name__ == '__main__':
     main()

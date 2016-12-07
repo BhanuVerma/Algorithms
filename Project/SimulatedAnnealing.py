@@ -143,8 +143,6 @@ class SimulatedAnnealing:
 
 
     def generate_tour(self):
-
-        #create output filename
         output_file = 'Output/' + self.cityname + "_LS2_" + str(self.cutoff_time) + "_" + str(self.random_seed) + ".sol"
         output_trace_file = 'Output/' + self.cityname + "_LS2_" + str(self.cutoff_time) + "_" + str(self.random_seed) + ".trace"
 
